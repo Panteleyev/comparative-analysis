@@ -2,9 +2,8 @@
  * Главный компонент приложения
  */
 import React from 'react';
-import logo from '../logo.svg';
 import styles from './App.scss';
-import localeCompare from 'string-localecompare';
+import AnalysisTable from './AnalysisTable/AnalysisTable';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -12,7 +11,6 @@ class App extends React.PureComponent {
     this.state = {
       columns: [],
       rows: [],
-      sortableCol: null,
       error: false,
     };
   }
@@ -42,21 +40,6 @@ class App extends React.PureComponent {
 
   getMaxABSDeltaPlan = rows => rows.reduce((maxDeltaPlan, curRow) => Math.abs(curRow.fDeltaPlan) > maxDeltaPlan ? Math.abs(curRow.fDeltaPlan) : maxDeltaPlan, 0);
 
-  onSortData(event, key){
-    const rows = this.state.rows;
-    const sortableCol = this.state.sortableCol;
-    const direction = !sortableCol && key !== Math.abs(sortableCol)-1 ? 1 : -Math.sign(sortableCol);
-
-    rows.sort((a, b) => key === Infinity ?
-      direction * (a.deviation - b.deviation) :
-      direction * localeCompare(a.axis.r[key].sName_RU, b.axis.r[key].sName_RU)
-    );
-    this.setState({
-      ...rows,
-      sortableCol: direction * (key + 1)
-    });
-  }
-
   render() {
     if (this.state.info && this.state.info.componentStack) {
       console.log(this.state.info.componentStack);
@@ -73,46 +56,8 @@ class App extends React.PureComponent {
 
     return (
       <div className={styles.App}>
-        <header className={styles.header}>
-          <img src={logo} className={styles.logo} alt="logo"/>
-          <h1 className={styles.title}>Welcome to React</h1>
-        </header>
-        <p className={styles.intro}>
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
         {columns.length > 0 && (
-          <table>
-            <thead>
-            <tr>
-              {columns.map((colData, index) => (
-                <th onClick={e => this.onSortData(e, index)} key={`th${index}`} data-item={colData}>{colData.sAxisName}</th>
-              ))}
-              <th colSpan="3" onClick={e => this.onSortData(e, Infinity)}>Отклонение от плана, п.п.</th>
-            </tr>
-            </thead>
-            <tbody>
-            {rows.map((rowData, rowIndex) => {
-              const directionPlan = Math.sign(rowData.fDeltaPlan);
-              const deviation = rowData.deviation;
-
-              return (
-                <tr key={`tr${rowIndex}`} data-item={rowData}>
-                  {columns.map((colData, colIndex) => {
-                    const title = rowData.axis.r[colData.nAxisID - 2].sName_RU;
-
-                    return (
-                      <td key={`td${rowIndex}.${colIndex}`} data-title={title}>{title}</td>
-                    )
-                  })}
-                  <td>{directionPlan < 0 ? deviation : 0}</td>
-                  <td key={`td${rowIndex}.deviation`} data-title={deviation}>{deviation} п.п.</td>
-                  <td>{directionPlan > 0 ? deviation : 0}</td>
-                </tr>
-              )
-            })}
-
-            </tbody>
-          </table>
+          <AnalysisTable columns={columns} rows={rows} />
         )}
       </div>
     );

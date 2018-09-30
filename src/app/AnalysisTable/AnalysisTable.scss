@@ -1,0 +1,45 @@
+$padding: 10px;
+
+table {
+  width: 100%;
+  border: 0;
+  border-collapse:collapse;
+
+  thead {
+    text-align: left;
+
+    th {
+      background-color: yellowgreen;
+      border-bottom: 2px solid red;
+      padding: $padding;
+
+      &:last-child {
+        text-align: center;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      background-color: cornsilk;
+
+      td {
+        padding: $padding;
+
+        &:nth-last-child(-n+3) {
+          text-align: center;
+        }
+      }
+
+      &:first-child {
+        td {
+          padding-top: 10px + $padding;
+        }
+      }
+
+      &:nth-child(2n) {
+        background-color: bisque;
+      }
+    }
+  }
+}
