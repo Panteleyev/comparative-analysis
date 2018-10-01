@@ -1,0 +1,22 @@
+.scale {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  background-color: #242e36;
+  border-radius: 6px;
+}
+.scale .fill {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #329c60;
+  background: -moz-linear-gradient(left, #329c60 0%, #4cc882 100%);
+  background: -webkit-linear-gradient(left, #329c60 0%, #4cc882 100%);
+  background: linear-gradient(to right, #329c60 0%, #4cc882 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#329c60', endColorstr='#4cc882', GradientType=1);
+  border-radius: 6px;
+}
+.scale.negative .fill {
+  background: #d94953;
+}

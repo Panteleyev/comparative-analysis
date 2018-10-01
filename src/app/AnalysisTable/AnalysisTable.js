@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {arrayOf, number, shape, string} from 'prop-types';
-import styles from './AnalysisTable.scss';
+import styles from './AnalysisTable.css';
 import localeCompare from 'string-localecompare';
 import Indicator from '../Indicator/Indicator';
 import {ERR_TEXT} from '../common/settings';

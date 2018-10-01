@@ -4,7 +4,7 @@
 import React from 'react';
 import {number, oneOf} from 'prop-types';
 import classNames from 'classnames';
-import styles from './Indicator.scss';
+import styles from './Indicator.css';
 
 const Indicator = (props) => {
   const {

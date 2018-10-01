@@ -2,7 +2,7 @@
  * Главный компонент приложения
  */
 import React from 'react';
-import styles from './App.scss';
+import styles from './App.css';
 import AnalysisTable from './AnalysisTable/AnalysisTable';
 
 class App extends React.PureComponent {

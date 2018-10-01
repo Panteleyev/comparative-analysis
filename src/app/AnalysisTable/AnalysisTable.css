@@ -1,0 +1,100 @@
+.table {
+  width: 100%;
+  border: 0;
+  border-collapse: collapse;
+}
+.table * {
+  font-family: Arial, sans-serif;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.table thead th {
+  border-bottom: 1px solid #2d3942;
+  padding: 37px 15px 26px;
+  white-space: nowrap;
+  color: #7a93a8;
+  font-weight: 300;
+  font-size: 10px;
+  cursor: default;
+  text-align: left;
+}
+.table thead th:after {
+  content: '▲';
+  color: transparent;
+  margin-left: 5px;
+}
+.table thead th.asc:after {
+  color: #dadcdd;
+}
+.table thead th.desc:after {
+  content: '▼';
+  color: #dadcdd;
+}
+.table thead th:last-child {
+  text-align: center;
+}
+.table tbody tr * {
+  font-size: 12px;
+}
+.table tbody tr td {
+  padding: 15px 15px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #dadcdd;
+  font-weight: 300;
+}
+.table tbody tr td > .text-content {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  position: absolute;
+  width: calc(100% - 2*15px);
+  padding: 15px 15px;
+  left: 0;
+  bottom: 0;
+}
+.table tbody tr td:nth-last-child(2),
+.table tbody tr td:nth-last-child(4) {
+  width: 10px;
+}
+.table tbody tr td:nth-last-child(2) {
+  padding-right: 7px;
+  padding-left: 7px;
+}
+.table tbody tr td:nth-last-child(1),
+.table tbody tr td:nth-last-child(3) {
+  width: 20%;
+  min-width: 100px;
+}
+.table tbody tr td:nth-last-child(1) {
+  padding-left: 0;
+}
+.table tbody tr td:nth-last-child(3) {
+  padding-right: 0;
+}
+.table tbody tr td:nth-last-child(-n+3) {
+  text-align: center;
+}
+.table tbody tr:first-child td {
+  padding-top: 33px;
+}
+.table tbody tr:nth-child(2n) {
+  background: #1c242c;
+  background: rgba(28, 36, 44, 0.01);
+}
+.table thead th:first-child,
+.table td:first-child {
+  padding-left: 30px;
+}
+.table thead th:first-child > .text-content,
+.table td:first-child > .text-content {
+  padding-left: 30px;
+}
+.table thead th:last-child,
+.table td:last-child {
+  padding-right: 30px;
+}

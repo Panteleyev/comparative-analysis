@@ -1,0 +1,13 @@
+@import "common/mixins.less";
+@import "common/settings.less";
+
+.App {
+  height: 100%;
+  overflow-x: auto;
+  .linear-vertical-gradient(@start-bg-color, @end-bg-color);
+
+  h2 {
+    padding: @td-vertical-padding @td-horizontal-padding;
+    color: @content-font-color;
+  }
+}

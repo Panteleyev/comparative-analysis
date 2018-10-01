@@ -101,6 +101,6 @@ yarn-error.log*
 #######################
 /yarn.lock
 /package-lock.json
-/**/src/**/*.css*
+#/**/src/**/*.css*
 /.idea
 /public/*.css.*
