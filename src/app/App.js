@@ -35,18 +35,32 @@ class App extends React.PureComponent {
     sAxisName: colData.sAxisName.toUpperCase()
   }));
 
-  parseRows = (rows, maxABSDeltaPlan) => rows.map(rowData => ({
-        ...rowData,
-        deviation: Math.ceil(rowData.fDeltaPlan * 100 / maxABSDeltaPlan)
-      }));
+  parseRows = (rows, maxABSDeltaPlan) => rows.map(rowData => {
+    if (
+      !rowData.hasOwnProperty('fDeltaPlan')
+    ) {
+      throw new Error('Data is corrupted');
+    }
+
+    return {
+      ...rowData,
+      deviation: Math.ceil(rowData.fDeltaPlan * 100 / maxABSDeltaPlan)
+    }
+  });
 
   parseJSON = data => {
-    const defCols = data.fa.fa_data.axis.r;
-    const columns = this.parseCols(defCols);
-    const defRows = data.fa.fa_data.r;
-    const rows = this.parseRows(defRows, this.getMaxABSDeltaPlan(defRows));
+    try {
+      const defCols = data.fa.fa_data.axis.r;
+      const columns = this.parseCols(defCols);
+      const defRows = data.fa.fa_data.r;
+      const rows = this.parseRows(defRows, this.getMaxABSDeltaPlan(defRows));
 
-    return {columns, rows};
+      return {columns, rows};
+    } catch (err) {
+      this.setState({
+        error: 'Unknown format data'
+      });
+    }
   };
 
   getMaxABSDeltaPlan = rows => rows.reduce((maxDeltaPlan, curRow) => Math.abs(curRow.fDeltaPlan) > maxDeltaPlan ? Math.abs(curRow.fDeltaPlan) : maxDeltaPlan, 0);
@@ -57,7 +71,9 @@ class App extends React.PureComponent {
     }
 
     if (this.state.error) {
-      return <h2>Error: {this.state.error.toString()}</h2>;
+      return <div className={styles.App}>
+        <h2>Error: {this.state.error.toString()}</h2>
+      </div>;
     }
 
     const {
@@ -68,7 +84,7 @@ class App extends React.PureComponent {
     return (
       <div className={styles.App}>
         {columns.length > 0 && (
-          <AnalysisTable columns={columns} rows={rows} />
+          <AnalysisTable columns={columns} rows={rows}/>
         )}
       </div>
     );

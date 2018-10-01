@@ -6,6 +6,7 @@ import {arrayOf, number, shape, string} from 'prop-types';
 import styles from './AnalysisTable.scss';
 import localeCompare from 'string-localecompare';
 import Indicator from '../Indicator/Indicator';
+import {ERR_TEXT} from '../common/settings';
 
 class AnalysisTable extends React.PureComponent {
   constructor(props) {
@@ -30,7 +31,7 @@ class AnalysisTable extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props !== nextProps) {
+    if (this.props !== nextProps) {
       this.setState({
         columns: nextProps.columns,
         rows: nextProps.rows,
@@ -46,25 +47,29 @@ class AnalysisTable extends React.PureComponent {
     // из-за столбца "Валюта" с ID = 1 остальные столбцы отсчитываются с 2, за исключением последнего столбца
     const direction = !sortableCol && key !== Math.abs(sortableCol) - 2 ? 1 : -Math.sign(sortableCol);
 
-    switch (key) {
-      case Infinity+2: {
-        rows.sort((a, b) => direction * (a.deviation - b.deviation));
-        break;
+    try {
+      switch (key) {
+        case Infinity + 2: {
+          rows.sort((a, b) => direction * (a.deviation - b.deviation));
+          break;
+        }
+        case 1: {
+          rows.sort((a, b) => direction * (a.sMeasDelta_RU - b.sMeasDelta_RU));
+          break;
+        }
+        default: {
+          rows.sort((a, b) => direction * localeCompare(a.axis.r[key - 2].sName_RU, b.axis.r[key - 2].sName_RU));
+          break;
+        }
       }
-      case 1: {
-        rows.sort((a, b) => direction * (a.sMeasDelta_RU - b.sMeasDelta_RU));
-        break;
-      }
-      default: {
-        rows.sort((a, b) => direction * localeCompare(a.axis.r[key - 2].sName_RU, b.axis.r[key - 2].sName_RU));
-        break;
-      }
-    }
 
-    this.setState({
-      ...rows,
-      sortableCol: direction * (key + 2)
-    });
+      this.setState({
+        ...rows,
+        sortableCol: direction * (key + 2)
+      });
+    } catch (err) {
+      console.log('Data is corrupted');
+    }
   };
 
   render() {
@@ -84,11 +89,11 @@ class AnalysisTable extends React.PureComponent {
     let firstColSortClass = null; // столбц "ВАЛЮТА" имеет ID = 1
     let lastColSortClass = null; // столбц "ОТКЛОНЕНИЕ ОТ ПЛАНА" имеет ID = Infinity
 
-    if (Math.abs(this.state.sortableCol) === 3){ // 1 (ID of first col) + 2
+    if (Math.abs(this.state.sortableCol) === 3) { // 1 (ID of first col) + 2
       firstColSortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
     }
 
-    if (Math.abs(this.state.sortableCol) === Infinity){ // Infinity (ID of last col)
+    if (Math.abs(this.state.sortableCol) === Infinity) { // Infinity (ID of last col)
       lastColSortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
     }
 
@@ -100,17 +105,18 @@ class AnalysisTable extends React.PureComponent {
             let sortClass = null;
 
             // из-за столбца "ВАЛЮТА" с ID = 1 остальные столбцы отсчитываются с 2, за исключением последнего столбца, у которого ID = Infinity
-            if (Math.abs(this.state.sortableCol)-2 === index+2){
+            if (Math.abs(this.state.sortableCol) - 2 === index + 2) {
               sortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
             }
 
             return (
-              <th className={sortClass} onClick={e => this.onSortData(e, index+2)} key={`th${index+2}`}
+              <th className={sortClass} onClick={e => this.onSortData(e, index + 2)} key={`th${index + 2}`}
                   data-item={colData}>{colData.sAxisName}</th>
             )
           })}
           <th className={firstColSortClass} onClick={e => this.onSortData(e, 1)}>ВАЛЮТА</th>
-          <th className={lastColSortClass} colSpan="3" onClick={e => this.onSortData(e, Infinity)}>ОТКЛОНЕНИЕ ОТ ПЛАНА</th>
+          <th className={lastColSortClass} colSpan="3" onClick={e => this.onSortData(e, Infinity)}>ОТКЛОНЕНИЕ ОТ ПЛАНА
+          </th>
         </tr>
         </thead>
         <tbody>
@@ -118,23 +124,32 @@ class AnalysisTable extends React.PureComponent {
           const fDeltaPlan = rowData.fDeltaPlan;
           const directionPlan = Math.sign(fDeltaPlan);
           const deviation = rowData.deviation;
+          const sMeasDeltaRU = rowData.sMeasDelta_RU ? rowData.sMeasDelta_RU : ERR_TEXT;
 
           return (
             <tr key={`tr${rowIndex}`} data-item={rowData}>
               {columns.map((colData, colIndex) => {
-                const title = rowData.axis.r[colData.nAxisID - 2].sName_RU;
+                let title;
+
+                try {
+                  title = rowData.axis.r[colData.nAxisID - 2].sName_RU;
+                } catch (err) {
+                  title = ERR_TEXT;
+                }
 
                 return (
-                  <td key={`td${rowIndex}.${colIndex + 2}`} data-title={title}><div className={styles['text-content']}>{title}</div></td>
+                  <td key={`td${rowIndex}.${colIndex + 2}`} data-title={title}>
+                    <div className={styles['text-content']}>{title}</div>
+                  </td>
                 )
               })}
-              <td key={`td${rowIndex}.1`}>{rowData.sMeasDelta_RU}</td>
+              <td key={`td${rowIndex}.1`}>{sMeasDeltaRU}</td>
               <td key={`td${rowIndex}.neg`}>
-                <Indicator percent={directionPlan < 0 ? deviation : 0} direction={-1} />
+                <Indicator percent={directionPlan < 0 ? deviation : 0} direction={-1}/>
               </td>
               <td key={`td${rowIndex}.deviation`} data-title={fDeltaPlan}>{fDeltaPlan}</td>
               <td key={`td${rowIndex}.pos`}>
-                <Indicator percent={directionPlan > 0 ? deviation : 0} />
+                <Indicator percent={directionPlan > 0 ? deviation : 0}/>
               </td>
             </tr>
           )

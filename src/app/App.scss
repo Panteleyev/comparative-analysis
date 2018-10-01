@@ -5,4 +5,9 @@
   height: 100%;
   overflow-x: auto;
   @include linear-vertical-gradient($start-bg-color, $end-bg-color);
+
+  h2 {
+    padding: $td-vertical-padding $td-horizontal-padding;
+    color: $content-font-color;
+  }
 }

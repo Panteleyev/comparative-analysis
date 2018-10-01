@@ -12,8 +12,8 @@ const Scale = (props) => {
     direction,
   } = props;
   const style = direction === -1 ?
-    {left: `${100+percent}%`,} :
-    {right: `${100-percent}%`,};
+    {left: `${100 + percent}%`,} :
+    {right: `${100 - percent}%`,};
   const scaleClass = classNames({
     [styles.scale]: true,
     [styles.negative]: (direction === -1),
@@ -28,7 +28,7 @@ const Scale = (props) => {
 
 Scale.propTypes = {
   percent: number.isRequired,
-  direction: oneOf([1,-1])
+  direction: oneOf([1, -1])
 };
 
 export default Scale;
