@@ -5,6 +5,7 @@ import React from 'react';
 import {arrayOf, number, shape, string} from 'prop-types';
 import styles from './AnalysisTable.scss';
 import localeCompare from 'string-localecompare';
+import Indicator from '../Indicator/Indicator';
 
 class AnalysisTable extends React.PureComponent {
   constructor(props) {
@@ -41,6 +42,8 @@ class AnalysisTable extends React.PureComponent {
   onSortData = (event, key) => {
     const rows = this.state.rows;
     const sortableCol = this.state.sortableCol;
+
+    // из-за столбца "Валюта" с ID = 1 остальные столбцы отсчитываются с 2, за исключением последнего столбца
     const direction = !sortableCol && key !== Math.abs(sortableCol) - 2 ? 1 : -Math.sign(sortableCol);
 
     switch (key) {
@@ -78,16 +81,36 @@ class AnalysisTable extends React.PureComponent {
       rows,
     } = this.state;
 
+    let firstColSortClass = null; // столбц "ВАЛЮТА" имеет ID = 1
+    let lastColSortClass = null; // столбц "ОТКЛОНЕНИЕ ОТ ПЛАНА" имеет ID = Infinity
+
+    if (Math.abs(this.state.sortableCol) === 3){ // 1 (ID of first col) + 2
+      firstColSortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
+    }
+
+    if (Math.abs(this.state.sortableCol) === Infinity){ // Infinity (ID of last col)
+      lastColSortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
+    }
+
     return (
-      <table>
+      <table className={styles.table}>
         <thead>
         <tr>
-          {columns.map((colData, index) => (
-            <th onClick={e => this.onSortData(e, index+2)} key={`th${index+2}`}
-                data-item={colData}>{colData.sAxisName}</th>
-          ))}
-          <th onClick={e => this.onSortData(e, 1)}>Валюта</th>
-          <th colSpan="3" onClick={e => this.onSortData(e, Infinity)}>Отклонение от плана</th>
+          {columns.map((colData, index) => {
+            let sortClass = null;
+
+            // из-за столбца "ВАЛЮТА" с ID = 1 остальные столбцы отсчитываются с 2, за исключением последнего столбца, у которого ID = Infinity
+            if (Math.abs(this.state.sortableCol)-2 === index+2){
+              sortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
+            }
+
+            return (
+              <th className={sortClass} onClick={e => this.onSortData(e, index+2)} key={`th${index+2}`}
+                  data-item={colData}>{colData.sAxisName}</th>
+            )
+          })}
+          <th className={firstColSortClass} onClick={e => this.onSortData(e, 1)}>ВАЛЮТА</th>
+          <th className={lastColSortClass} colSpan="3" onClick={e => this.onSortData(e, Infinity)}>ОТКЛОНЕНИЕ ОТ ПЛАНА</th>
         </tr>
         </thead>
         <tbody>
@@ -102,13 +125,17 @@ class AnalysisTable extends React.PureComponent {
                 const title = rowData.axis.r[colData.nAxisID - 2].sName_RU;
 
                 return (
-                  <td key={`td${rowIndex}.${colIndex + 2}`} data-title={title}>{title}</td>
+                  <td key={`td${rowIndex}.${colIndex + 2}`} data-title={title}><div className={styles['text-content']}>{title}</div></td>
                 )
               })}
               <td key={`td${rowIndex}.1`}>{rowData.sMeasDelta_RU}</td>
-              <td key={`td${rowIndex}.neg`}>{directionPlan < 0 ? deviation : 0}</td>
+              <td key={`td${rowIndex}.neg`}>
+                <Indicator percent={directionPlan < 0 ? deviation : 0} direction={-1} />
+              </td>
               <td key={`td${rowIndex}.deviation`} data-title={fDeltaPlan}>{fDeltaPlan}</td>
-              <td key={`td${rowIndex}.pos`}>{directionPlan > 0 ? deviation : 0}</td>
+              <td key={`td${rowIndex}.pos`}>
+                <Indicator percent={directionPlan > 0 ? deviation : 0} />
+              </td>
             </tr>
           )
         })}

@@ -1,6 +1,7 @@
 /**
  * Клиентская часть
  */
+import './app/common/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';

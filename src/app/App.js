@@ -23,20 +23,31 @@ class App extends React.PureComponent {
     fetch('/api/data')
       .then(res => res.json())
       .then(data => {
-        const rows = data.fa.fa_data.r;
-        const maxABSDeltaPlan = this.getMaxABSDeltaPlan(rows);
-
-        rows.map((rowData, rowIndex) => {
-          rows[rowIndex].deviation = Math.ceil(rowData.fDeltaPlan * 100 / maxABSDeltaPlan);
-        });
-
         this.setState({
-          columns: data.fa.fa_data.axis.r,
-          rows: rows,
+          ...this.parseJSON(data)
         });
       })
       .catch(throws => console.log(throws))
   }
+
+  parseCols = cols => cols.map(colData => ({
+    ...colData,
+    sAxisName: colData.sAxisName.toUpperCase()
+  }));
+
+  parseRows = (rows, maxABSDeltaPlan) => rows.map(rowData => ({
+        ...rowData,
+        deviation: Math.ceil(rowData.fDeltaPlan * 100 / maxABSDeltaPlan)
+      }));
+
+  parseJSON = data => {
+    const defCols = data.fa.fa_data.axis.r;
+    const columns = this.parseCols(defCols);
+    const defRows = data.fa.fa_data.r;
+    const rows = this.parseRows(defRows, this.getMaxABSDeltaPlan(defRows));
+
+    return {columns, rows};
+  };
 
   getMaxABSDeltaPlan = rows => rows.reduce((maxDeltaPlan, curRow) => Math.abs(curRow.fDeltaPlan) > maxDeltaPlan ? Math.abs(curRow.fDeltaPlan) : maxDeltaPlan, 0);
 

@@ -1,17 +1,44 @@
-$padding: 10px;
+@import "../common/mixins";
+@import "../common/settings";
 
-table {
+$h-padding: $td-horizontal-padding;
+$v-padding: $td-vertical-padding;
+
+.table {
   width: 100%;
   border: 0;
-  border-collapse:collapse;
+  border-collapse: collapse;
+
+  * {
+    font-family: $font-family;
+    @include no-select;
+  }
 
   thead {
-    text-align: left;
-
     th {
-      background-color: yellowgreen;
-      border-bottom: 2px solid red;
-      padding: $padding;
+      border-bottom: 1px solid $separator-color;
+      padding: $th-top-padding $h-padding $th-bottom-padding;
+      white-space: nowrap;
+      color: $main-font-color;
+      font-weight: $main-font-weight;
+      font-size: $main-font-size;
+      cursor: default;
+      text-align: left;
+
+      &:after {
+        content: '▲';
+        color: transparent;
+        margin-left: 5px;
+      }
+
+      &.asc:after {
+        color: $content-font-color;
+      }
+
+      &.desc:after {
+        content: '▼';
+        color: $content-font-color;
+      }
 
       &:last-child {
         text-align: center;
@@ -19,27 +46,67 @@ table {
     }
   }
 
-  tbody {
-    tr {
-      background-color: cornsilk;
+  tbody tr {
+    * {
+      font-size: $content-font-size;
+    }
 
-      td {
-        padding: $padding;
+    td {
+      padding: $v-padding $h-padding;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      color: $content-font-color;
+      font-weight: $content-font-weight;
 
-        &:nth-last-child(-n+3) {
-          text-align: center;
-        }
+      & > .text-content {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        position: absolute;
+        width: calc(100% - #{2*$v-padding});
+        padding: $v-padding $h-padding;
+        left: 0;
+        bottom: 0;
       }
 
-      &:first-child {
-        td {
-          padding-top: 10px + $padding;
-        }
+      &:nth-last-child(2),
+      &:nth-last-child(4) {
+        width: 10px;
       }
 
-      &:nth-child(2n) {
-        background-color: bisque;
+      &:nth-last-child(1),
+      &:nth-last-child(3) {
+        width: 20%;
+        min-width: 100px;
       }
+
+      &:nth-last-child(-n+3) {
+        text-align: center
+      }
+    }
+
+    &:first-child td {
+      padding-top: $first-tr-top-padding
+    }
+
+    &:nth-child(2n) {
+      @include background-opacity($second-bg-color, 1);
+    }
+  }
+
+  thead th,
+  td {
+    &:first-child {
+      padding-left: $first-td-left-padding;
+
+      & > .text-content {
+        padding-left: $first-td-left-padding;
+      }
+    }
+
+    &:last-child {
+      padding-right: $last-td-left-padding;
     }
   }
 }

@@ -1,3 +1,8 @@
-.App {
+@import "common/mixins";
+@import "common/settings";
 
+.App {
+  height: 100%;
+  overflow-x: auto;
+  @include linear-vertical-gradient($start-bg-color, $end-bg-color);
 }
