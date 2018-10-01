@@ -30,11 +30,20 @@ class App extends React.PureComponent {
       .catch(throws => console.log(throws))
   }
 
+  /**
+   * Парсер столбцов
+   * @param {*[]} cols - данные о столбцах
+   */
   parseCols = cols => cols.map(colData => ({
     ...colData,
     sAxisName: colData.sAxisName.toUpperCase()
   }));
 
+  /**
+   * Парсер строк
+   * @param {*[]} rows - данных о строках
+   * @param {number} maxABSDeltaPlan - максимальное по модулю значение
+   */
   parseRows = (rows, maxABSDeltaPlan) => rows.map(rowData => {
     if (
       !rowData.hasOwnProperty('fDeltaPlan')
@@ -48,6 +57,11 @@ class App extends React.PureComponent {
     }
   });
 
+  /**
+   * Парсер данных JSON. Разбирает данные на столбцы и строки.
+   * @param {{fa: {nDynamicTypeID: number, fa_data: {r: *[], axis: {r: *[]}}}}} data - данные JSON для таблицы
+   * @returns {{columns: *, rows: *}}
+   */
   parseJSON = data => {
     try {
       const defCols = data.fa.fa_data.axis.r;
@@ -63,7 +77,16 @@ class App extends React.PureComponent {
     }
   };
 
-  getMaxABSDeltaPlan = rows => rows.reduce((maxDeltaPlan, curRow) => Math.abs(curRow.fDeltaPlan) > maxDeltaPlan ? Math.abs(curRow.fDeltaPlan) : maxDeltaPlan, 0);
+  /**
+   * Геттер максимальное по модулю значение
+   * @param {*[]} rows - данных о строках
+   */
+  getMaxABSDeltaPlan = rows => rows.reduce(
+    (maxDeltaPlan, curRow) =>
+      Math.abs(curRow.fDeltaPlan) > maxDeltaPlan ?
+        Math.abs(curRow.fDeltaPlan) :
+        maxDeltaPlan, 0
+  );
 
   render() {
     if (this.state.info && this.state.info.componentStack) {

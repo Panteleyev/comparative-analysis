@@ -1,5 +1,5 @@
 /**
- * Компонент таблицы для проведения сравнительных анализов
+ * Компонент таблицы
  */
 import React from 'react';
 import {arrayOf, number, shape, string} from 'prop-types';
@@ -40,6 +40,11 @@ class AnalysisTable extends React.PureComponent {
     }
   }
 
+  /**
+   * Функция сортировки
+   * @param event - событие
+   * @param {number} key - номер столбца
+   */
   onSortData = (event, key) => {
     const rows = this.state.rows;
     const sortableCol = this.state.sortableCol;

@@ -1,12 +1,12 @@
 /**
- * Компонент отображения шкалы
+ * Компонент отображения индикатора
  */
 import React from 'react';
 import {number, oneOf} from 'prop-types';
 import classNames from 'classnames';
 import styles from './Indicator.scss';
 
-const Scale = (props) => {
+const Indicator = (props) => {
   const {
     percent,
     direction,
@@ -26,9 +26,9 @@ const Scale = (props) => {
   );
 };
 
-Scale.propTypes = {
+Indicator.propTypes = {
   percent: number.isRequired,
   direction: oneOf([1, -1])
 };
 
-export default Scale;
+export default Indicator;
