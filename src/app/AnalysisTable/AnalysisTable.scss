@@ -75,12 +75,28 @@ $v-padding: $td-vertical-padding;
         width: 10px;
       }
 
+      /* Между индикаторами */
+      &:nth-last-child(2) {
+        padding-right: $beetwen-indicators-horizontal-padding;
+        padding-left: $beetwen-indicators-horizontal-padding;
+      }
+
+      /* Индикаторы */
       &:nth-last-child(1),
       &:nth-last-child(3) {
         width: 20%;
         min-width: 100px;
       }
 
+      &:nth-last-child(1) {
+        padding-left: 0;
+      }
+
+      &:nth-last-child(3) {
+        padding-right: 0;
+      }
+
+      /* Последние три столбца */
       &:nth-last-child(-n+3) {
         text-align: center
       }

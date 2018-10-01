@@ -50,7 +50,7 @@ class AnalysisTable extends React.PureComponent {
     try {
       switch (key) {
         case Infinity + 2: {
-          rows.sort((a, b) => direction * (a.deviation - b.deviation));
+          rows.sort((a, b) => direction * (a.deviationPercent - b.deviationPercent));
           break;
         }
         case 1: {
@@ -123,8 +123,9 @@ class AnalysisTable extends React.PureComponent {
         {rows.map((rowData, rowIndex) => {
           const fDeltaPlan = rowData.fDeltaPlan;
           const directionPlan = Math.sign(fDeltaPlan);
-          const deviation = rowData.deviation;
+          const deviationPercent = rowData.deviationPercent;
           const sMeasDeltaRU = rowData.sMeasDelta_RU ? rowData.sMeasDelta_RU : ERR_TEXT;
+          const deviationValue = (directionPlan > 0 ? '+' : '-') + ' ' + Math.abs(fDeltaPlan);
 
           return (
             <tr key={`tr${rowIndex}`} data-item={rowData}>
@@ -145,11 +146,11 @@ class AnalysisTable extends React.PureComponent {
               })}
               <td key={`td${rowIndex}.1`}>{sMeasDeltaRU}</td>
               <td key={`td${rowIndex}.neg`}>
-                <Indicator percent={directionPlan < 0 ? deviation : 0} direction={-1}/>
+                <Indicator percent={directionPlan < 0 ? deviationPercent : 0} direction={-1}/>
               </td>
-              <td key={`td${rowIndex}.deviation`} data-title={fDeltaPlan}>{fDeltaPlan}</td>
+              <td key={`td${rowIndex}.deviationPercent`} data-title={fDeltaPlan}>{deviationValue}</td>
               <td key={`td${rowIndex}.pos`}>
-                <Indicator percent={directionPlan > 0 ? deviation : 0}/>
+                <Indicator percent={directionPlan > 0 ? deviationPercent : 0}/>
               </td>
             </tr>
           )

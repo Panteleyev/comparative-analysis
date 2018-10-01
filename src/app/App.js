@@ -44,7 +44,7 @@ class App extends React.PureComponent {
 
     return {
       ...rowData,
-      deviation: Math.ceil(rowData.fDeltaPlan * 100 / maxABSDeltaPlan)
+      deviationPercent: Math.ceil(rowData.fDeltaPlan * 100 / maxABSDeltaPlan)
     }
   });
 
