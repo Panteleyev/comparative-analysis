@@ -84,7 +84,6 @@
 }
 .table tbody tr:nth-child(2n) {
   background: #1c242c;
-  background: rgba(28, 36, 44, 0.01);
 }
 .table thead th:first-child,
 .table td:first-child {
