@@ -85,7 +85,8 @@ class App extends React.PureComponent {
     (maxDeltaPlan, curRow) =>
       Math.abs(curRow.fDeltaPlan) > maxDeltaPlan ?
         Math.abs(curRow.fDeltaPlan) :
-        maxDeltaPlan, 0
+        maxDeltaPlan,
+    0
   );
 
   render() {

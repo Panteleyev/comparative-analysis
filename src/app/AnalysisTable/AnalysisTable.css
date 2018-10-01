@@ -83,7 +83,7 @@
   padding-top: 33px;
 }
 .table tbody tr:nth-child(2n) {
-  background: #1c242c;
+  background-color: #1c242c;
 }
 .table thead th:first-child,
 .table td:first-child {
