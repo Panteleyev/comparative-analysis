@@ -6,7 +6,7 @@ import {number, oneOf} from 'prop-types';
 import classNames from 'classnames';
 import styles from './Indicator.css';
 
-const Indicator = (props) => {
+const Indicator = props => {
   const {
     percent,
     direction,

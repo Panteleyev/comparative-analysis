@@ -120,8 +120,7 @@ class AnalysisTable extends React.PureComponent {
             )
           })}
           <th className={firstColSortClass} onClick={e => this.onSortData(e, 1)}>ВАЛЮТА</th>
-          <th className={lastColSortClass} colSpan="3" onClick={e => this.onSortData(e, Infinity)}>ОТКЛОНЕНИЕ ОТ ПЛАНА
-          </th>
+          <th className={lastColSortClass} colSpan="3" onClick={e => this.onSortData(e, Infinity)}>ОТКЛОНЕНИЕ ОТ ПЛАНА</th>
         </tr>
         </thead>
         <tbody>
@@ -160,7 +159,6 @@ class AnalysisTable extends React.PureComponent {
             </tr>
           )
         })}
-
         </tbody>
       </table>
     );
