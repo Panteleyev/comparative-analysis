@@ -41,13 +41,11 @@ class App extends React.PureComponent {
 
   /**
    * Парсер строк
-   * @param {*[]} rows - данных о строках
+   * @param {*[]} rows - данные о строках
    * @param {number} maxABSDeltaPlan - максимальное по модулю значение
    */
   parseRows = (rows, maxABSDeltaPlan) => rows.map(rowData => {
-    if (
-      !rowData.hasOwnProperty('fDeltaPlan')
-    ) {
+    if (!rowData.hasOwnProperty('fDeltaPlan')) {
       throw new Error('Data is corrupted');
     }
 
@@ -58,7 +56,7 @@ class App extends React.PureComponent {
   });
 
   /**
-   * Парсер данных JSON. Разбирает данные на столбцы и строки.
+   * Парсер данных JSON. Разбирает данные на столбцы и строки
    * @param {{fa: {nDynamicTypeID: number, fa_data: {r: *[], axis: {r: *[]}}}}} data - данные JSON для таблицы
    * @returns {{columns: *, rows: *}}
    */
@@ -78,14 +76,15 @@ class App extends React.PureComponent {
   };
 
   /**
-   * Геттер максимальное по модулю значение
-   * @param {*[]} rows - данных о строках
+   * Геттер максимального по модулю значения
+   * @param {*[]} rows - данные о строках
    */
   getMaxABSDeltaPlan = rows => rows.reduce(
     (maxDeltaPlan, curRow) =>
       Math.abs(curRow.fDeltaPlan) > maxDeltaPlan ?
         Math.abs(curRow.fDeltaPlan) :
-        maxDeltaPlan, 0
+        maxDeltaPlan,
+    0
   );
 
   render() {
