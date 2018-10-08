@@ -1,4 +1,4 @@
-Проект **«Comparative analysis»** позволяет загрузить данные, провести анализ данных.
+Проект **«Comparative analysis»** позволяет загрузить данные и провести сравнительный анализ данных.
 
 Данный проект разработан на базе [Create React App](https://github.com/facebookincubator/create-react-app).
 
