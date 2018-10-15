@@ -8,6 +8,9 @@ import localeCompare from 'string-localecompare';
 import Indicator from '../Indicator/Indicator';
 import {ERR_TEXT} from '../common/settings';
 
+// из-за столбца "Валюта" с ID = 1 остальные столбцы отсчитываются с 2
+const COUNTDOWN_NUMBER_COL = 2;
+
 class AnalysisTable extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -48,29 +51,30 @@ class AnalysisTable extends React.PureComponent {
   onSortData = (event, key) => {
     const rows = this.state.rows;
     const sortableCol = this.state.sortableCol;
-
-    // из-за столбца "Валюта" с ID = 1 остальные столбцы отсчитываются с 2, за исключением последнего столбца
-    const direction = !sortableCol && key !== Math.abs(sortableCol) - 2 ? 1 : -Math.sign(sortableCol);
+    const direction = !sortableCol && key !== Math.abs(sortableCol) - COUNTDOWN_NUMBER_COL ? 1 : -Math.sign(sortableCol);
 
     try {
       switch (key) {
-        case Infinity + 2: {
+        case Infinity: { // последний столбец
           rows.sort((a, b) => direction * (a.deviationPercent - b.deviationPercent));
           break;
         }
-        case 1: {
+        case 1: { // первый столбец
           rows.sort((a, b) => direction * (a.sMeasDelta_RU - b.sMeasDelta_RU));
           break;
         }
-        default: {
-          rows.sort((a, b) => direction * localeCompare(a.axis.r[key - 2].sName_RU, b.axis.r[key - 2].sName_RU));
+        default: { // другой столбец
+          rows.sort((a, b) => direction * localeCompare(
+            a.axis.r[key - COUNTDOWN_NUMBER_COL].sName_RU,
+            b.axis.r[key - COUNTDOWN_NUMBER_COL].sName_RU
+          ));
           break;
         }
       }
 
       this.setState({
         ...rows,
-        sortableCol: direction * (key + 2)
+        sortableCol: direction * (key + COUNTDOWN_NUMBER_COL)
       });
     } catch (err) {
       console.log('Data is corrupted');
@@ -94,7 +98,7 @@ class AnalysisTable extends React.PureComponent {
     let firstColSortClass = null; // столбц "ВАЛЮТА" имеет ID = 1
     let lastColSortClass = null; // столбц "ОТКЛОНЕНИЕ ОТ ПЛАНА" имеет ID = Infinity
 
-    if (Math.abs(this.state.sortableCol) === 3) { // 1 (ID of first col) + 2
+    if (Math.abs(this.state.sortableCol) === 1 + COUNTDOWN_NUMBER_COL) { // 1 (ID of first col) + 2
       firstColSortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
     }
 
@@ -110,12 +114,13 @@ class AnalysisTable extends React.PureComponent {
             let sortClass = null;
 
             // из-за столбца "ВАЛЮТА" с ID = 1 остальные столбцы отсчитываются с 2, за исключением последнего столбца, у которого ID = Infinity
-            if (Math.abs(this.state.sortableCol) - 2 === index + 2) {
+            if (Math.abs(this.state.sortableCol) - COUNTDOWN_NUMBER_COL === index + COUNTDOWN_NUMBER_COL) {
               sortClass = Math.sign(this.state.sortableCol) > 0 ? styles.asc : styles.desc;
             }
 
             return (
-              <th className={sortClass} onClick={e => this.onSortData(e, index + 2)} key={`th${index + 2}`}
+              <th className={sortClass} onClick={e => this.onSortData(e, index + COUNTDOWN_NUMBER_COL)}
+                  key={`th${index + COUNTDOWN_NUMBER_COL}`}
                   data-item={colData}>{colData.sAxisName}</th>
             )
           })}
@@ -137,13 +142,13 @@ class AnalysisTable extends React.PureComponent {
                 let title;
 
                 try {
-                  title = rowData.axis.r[colData.nAxisID - 2].sName_RU;
+                  title = rowData.axis.r[colData.nAxisID - COUNTDOWN_NUMBER_COL].sName_RU;
                 } catch (err) {
                   title = ERR_TEXT;
                 }
 
                 return (
-                  <td key={`td${rowIndex}.${colIndex + 2}`} data-title={title}>
+                  <td key={`td${rowIndex}.${colIndex + COUNTDOWN_NUMBER_COL}`} data-title={title}>
                     <div className={styles['text-content']}>{title}</div>
                   </td>
                 )
